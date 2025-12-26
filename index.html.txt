@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Existence Idle</title>
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#6c63ff">
+
+<style>
+/* ================= BASE ================= */
+body {
+  margin: 0;
+  font-family: system-ui, Arial;
+  background: radial-gradient(circle at top, #1a1a3a, #070711);
+  color: #eaeaff;
+}
+header {
+  text-align: center;
+  padding: 15px;
+  background: linear-gradient(90deg, #6c63ff, #4b44ff);
+}
+h1 { margin: 0; }
+
+/* ================= TABS ================= */
+nav {
+  display: flex;
+  background: #0e0e22;
+}
+nav button {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  background: transparent;
+  color: #aaa;
+  cursor: pointer;
+}
+nav button.active {
+  color: white;
+  border-bottom: 3px solid #6c63ff;
+}
+
+/* ================= PANELS ================= */
+.panel {
+  display: none;
+  padding: 15px;
+  animation: fadeIn .3s ease;
+}
+.panel.active { display: block; }
+
+.card {
+  background: #111133;
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+button.action {
+  width: 100%;
+  padding: 10px;
+  background: #6c63ff;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+}
+button.action:disabled {
+  background: #333;
+}
+
+/* ================= ANIMAÇÕES ================= */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>Existence Idle</h1>
+  <small>Do Nada ao ∞</small>
+</header>
+
+<nav>
+  <button class="active" onclick="showTab('game')">Camadas</button>
+  <button onclick="showTab('upgrades')">Upgrades</button>
+  <button onclick="showTab('prestige')">Prestígio</button>
+  <button onclick="showTab('stats')">Stats</button>
+</nav>
+
+<!-- ================= CAMADAS ================= -->
+<div id="game" class="panel active">
+  <div class="card">
+    <p>Essência Existencial: <b id="ee">0</b></p>
+    <p>EE / s: <b id="eps">0</b></p>
+    <button class="action" onclick="clickExist()">Gerar Existência</button>
+  </div>
+
+  <div class="card">
+    <h3 id="layerName"></h3>
+    <p id="stageInfo"></p>
+    <button class="action" onclick="buyStage()">Comprar Estágio</button>
+  </div>
+</div>
+
+<!-- ================= UPGRADES ================= -->
+<div id="upgrades" class="panel">
+  <div id="upgradeList"></div>
+</div>
+
+<!-- ================= PRESTÍGIO ================= -->
+<div id="prestige" class="panel">
+  <div class="card">
+    <p>Fragmentos do Infinito: <b id="fi">0</b></p>
+    <button class="action" onclick="prestige()">Reset Absoluto</button>
+  </div>
+</div>
+
+<!-- ================= STATS ================= -->
+<div id="stats" class="panel">
+  <div class="card">
+    <p>Camada Atual: <span id="statLayer"></span></p>
+    <p>Total de resets: <span id="statResets"></span></p>
+  </div>
+</div>
+
+<script>
+/* ================= DADOS ================= */
+const LAYERS = [
+  { name: "Pré-Existência", base: 0.1 },
+  { name: "Sub-Quântico", base: 1 },
+  { name: "Partículas", base: 5 },
+  { name: "Átomos", base: 20 },
+  { name: "Vida", base: 100 },
+  { name: "Planetas", base: 500 },
+  { name: "Estrelas", base: 2000 },
+  { name: "Galáxias", base: 10000 },
+  { name: "Universos", base: 50000 },
+  { name: "Multiversos", base: 250000 }
+];
+
+/* ================= ESTADO ================= */
+const game = {
+  ee: 0,
+  eps: 0,
+  fi: 0,
+  layer: 0,
+  stage: 0,
+  resets: 0,
+  multiplier: 1
+};
+
+/* ================= UPGRADES POR CAMADA ================= */
+const UPGRADES = {
+  0: [
+    { name: "Potencial Puro", cost: 10, effect: () => game.multiplier *= 2 }
+  ],
+  1: [
+    { name: "Colapso Quântico", cost: 100, effect: () => game.multiplier *= 3 }
+  ],
+  2: [
+    { name: "Simetria de Partículas", cost: 500, effect: () => game.multiplier *= 5 }
+  ],
+  3: [
+    { name: "Ligação Molecular", cost: 2000, effect: () => game.multiplier *= 8 }
+  ]
+};
+
+/* ================= FUNÇÕES ================= */
+function clickExist() {
+  game.ee += 1 * game.multiplier;
+}
+
+function buyStage() {
+  const cost = LAYERS[game.layer].base * Math.pow(1.6, game.stage);
+  if (game.ee >= cost) {
+    game.ee -= cost;
+    game.stage++;
+    game.eps += LAYERS[game.layer].base * game.multiplier;
+    if (game.stage >= 10 && game.layer < LAYERS.length - 1) {
+      game.stage = 0;
+      game.layer++;
+      loadUpgrades();
+    }
+  }
+}
+
+function prestige() {
+  if (game.layer >= 5) {
+    game.fi += Math.floor(Math.log10(game.ee + 1));
+    game.ee = 0;
+    game.eps = 0;
+    game.layer = 0;
+    game.stage = 0;
+    game.multiplier = 1 + game.fi * 0.5;
+    game.resets++;
+    loadUpgrades();
+  }
+}
+
+/* ================= UI ================= */
+function showTab(id) {
+  document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
+  document.querySelectorAll("nav button").forEach(b => b.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  event.target.classList.add("active");
+}
+
+function loadUpgrades() {
+  const list = document.getElementById("upgradeList");
+  list.innerHTML = "";
+  (UPGRADES[game.layer] || []).forEach(u => {
+    const btn = document.createElement("button");
+    btn.className = "action";
+    btn.textContent = `${u.name} (${u.cost} EE)`;
+    btn.onclick = () => {
+      if (game.ee >= u.cost) {
+        game.ee -= u.cost;
+        u.effect();
+        btn.disabled = true;
+      }
+    };
+    list.appendChild(btn);
+  });
+}
+
+/* ================= LOOP ================= */
+setInterval(() => {
+  game.ee += game.eps / 10;
+  document.getElementById("ee").textContent = game.ee.toFixed(1);
+  document.getElementById("eps").textContent = game.eps.toFixed(1);
+  document.getElementById("fi").textContent = game.fi;
+  document.getElementById("layerName").textContent = LAYERS[game.layer].name;
+  document.getElementById("stageInfo").textContent =
+    `Estágio ${game.stage + 1} | Custo: ${(LAYERS[game.layer].base * Math.pow(1.6, game.stage)).toFixed(1)}`;
+  document.getElementById("statLayer").textContent = LAYERS[game.layer].name;
+  document.getElementById("statResets").textContent = game.resets;
+}, 100);
+
+loadUpgrades();
+</script>
+
+</body>
+</html>
