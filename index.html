@@ -4,109 +4,157 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Existence Idle ∞</title>
-
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#5f5cff">
+<meta name="theme-color" content="#1b1b3a">
 
 <style>
 /* ================= RESET ================= */
-* { box-sizing: border-box; margin:0; padding:0; }
+*{margin:0;padding:0;box-sizing:border-box;}
 
 /* ================= BASE ================= */
-body {
-  font-family: system-ui, Arial;
-  background: radial-gradient(circle at top, #1b1b3a, #05050f);
-  color: #eaeaff;
+body{
+  font-family:'Segoe UI',sans-serif;
+  background: radial-gradient(circle at top, #0b0b22, #1b1b3a);
+  color:#eaeaff;
+  overflow-x:hidden;
 }
 
 /* ================= HEADER ================= */
-header {
-  text-align: center;
-  padding: 16px;
-  background: linear-gradient(90deg, #5f5cff, #7f7cff);
-  box-shadow: 0 0 20px #5f5cff66;
+header{
+  text-align:center;
+  padding:16px;
+  background: linear-gradient(90deg,#5f5cff,#7f7cff);
+  box-shadow:0 0 30px #5f5cff88;
 }
+header h1{font-size:2rem;}
+header small{color:#ccc;}
 
 /* ================= NAV ================= */
-nav {
-  display: flex;
-  background: #0b0b22;
+nav{
+  display:flex;
+  background:#0f0f2a;
 }
-nav button {
-  flex: 1;
-  padding: 14px;
-  background: none;
-  border: none;
-  color: #888;
-  cursor: pointer;
-  transition: .2s;
+nav button{
+  flex:1;
+  padding:14px;
+  background:none;
+  border:none;
+  color:#888;
+  cursor:pointer;
+  transition:.2s;
+  font-weight:bold;
 }
-nav button.active {
-  color: #fff;
-  border-bottom: 3px solid #5f5cff;
+nav button.active{
+  color:#fff;
+  border-bottom:4px solid #5f5cff;
 }
 
 /* ================= PANELS ================= */
-.panel {
-  display: none;
-  padding: 16px;
-  animation: fade .25s ease;
+.panel{
+  display:none;
+  padding:16px;
+  animation:fade .3s ease;
 }
-.panel.active { display: block; }
+.panel.active{display:block;}
 
-.card {
-  background: #0f0f2a;
-  border-radius: 14px;
-  padding: 14px;
-  margin-bottom: 12px;
-  box-shadow: 0 0 12px #000;
+/* ================= CARDS ================= */
+.card{
+  background: rgba(15,15,42,0.9);
+  border-radius:16px;
+  padding:20px;
+  margin-bottom:16px;
+  box-shadow:0 0 20px #00000088;
+  transition:0.3s;
+}
+.card:hover{
+  transform:scale(1.02);
+  box-shadow:0 0 30px #5f5cff88;
 }
 
 /* ================= BUTTONS ================= */
-.btn {
-  width: 100%;
-  padding: 12px;
-  border-radius: 10px;
-  border: none;
-  background: linear-gradient(90deg, #5f5cff, #7f7cff);
-  color: white;
-  cursor: pointer;
-  margin-top: 6px;
+.btn{
+  width:100%;
+  padding:14px;
+  border-radius:12px;
+  border:none;
+  background:linear-gradient(90deg,#5f5cff,#7f7cff);
+  color:#fff;
+  font-weight:bold;
+  cursor:pointer;
+  transition:0.2s;
+  margin-top:6px;
 }
-.btn:disabled {
-  opacity: .4;
-  cursor: default;
+.btn:disabled{
+  opacity:0.4;
+  cursor:default;
 }
 
 /* ================= PROGRESS ================= */
-.progress {
-  height: 10px;
-  background: #222;
-  border-radius: 10px;
-  overflow: hidden;
-  margin-top: 6px;
+.progress{
+  height:16px;
+  background:#222;
+  border-radius:12px;
+  overflow:hidden;
+  margin-top:6px;
 }
-.progress div {
-  height: 100%;
-  background: linear-gradient(90deg, #5f5cff, #7f7cff);
+.progress div{
+  height:100%;
+  background: linear-gradient(90deg,#5f5cff,#7f7cff);
+  transition:0.2s;
+}
+
+/* ================= UPGRADES ARVORE ================= */
+.upgrade-tree{
+  display:flex;
+  flex-wrap:wrap;
+  gap:12px;
+  justify-content:center;
+}
+.upgrade-node{
+  background:#0f0f2a;
+  border:2px solid #5f5cff;
+  border-radius:12px;
+  padding:12px;
+  width:120px;
+  text-align:center;
+  cursor:pointer;
+  transition:.3s;
+}
+.upgrade-node:hover{
+  background:#1b1b3a;
+  transform:scale(1.05);
+  box-shadow:0 0 20px #5f5cff88;
 }
 
 /* ================= CALCULATOR ================= */
-.calc {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 6px;
-  margin-top: 6px;
+.calc{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:6px;
+  margin-top:6px;
 }
-.calc button {
-  padding: 14px;
-  font-size: 16px;
+.calc button{
+  padding:14px;
+  font-size:18px;
+  border-radius:8px;
+  border:none;
+  background:#1b1b3a;
+  color:#fff;
+  cursor:pointer;
+  transition:0.2s;
+}
+.calc button:hover{background:#5f5cff}
+
+/* ================= PREFIX BUTTON ================= */
+#prefixBtn{
+  margin-top:6px;
+  background:#7f7cff;
 }
 
 /* ================= ANIM ================= */
-@keyframes fade {
-  from { opacity: 0; transform: translateY(4px); }
-  to { opacity: 1; transform: translateY(0); }
+@keyframes fade{
+  from{opacity:0;transform:translateY(4px);}
+  to{opacity:1;transform:translateY(0);}
 }
 </style>
 </head>
@@ -132,8 +180,8 @@ nav button.active {
     <p>Essência Existencial: <b id="ee">0</b></p>
     <p>EE/s: <b id="eps">0</b></p>
     <button class="btn" id="clickBtn">Gerar Existência</button>
+    <button class="btn" id="prefixBtn">Mostrar Prefixos</button>
   </div>
-
   <div class="card">
     <h3 id="layerName"></h3>
     <p>Estágio <span id="stage"></span>/10</p>
@@ -144,13 +192,13 @@ nav button.active {
 
 <!-- ================= UPGRADES ================= -->
 <div id="upgrades" class="panel">
-  <div id="upgradeList"></div>
+  <div class="upgrade-tree" id="upgradeList"></div>
 </div>
 
 <!-- ================= CALCULATOR ================= -->
 <div id="calculator" class="panel">
   <div class="card">
-    <input id="calcDisplay" disabled style="width:100%;padding:10px;font-size:18px">
+    <input id="calcDisplay" disabled style="width:100%;padding:12px;font-size:20px;border-radius:8px;margin-bottom:6px;">
     <div class="calc" id="calcKeys"></div>
     <p id="calcResult"></p>
   </div>
@@ -177,89 +225,81 @@ nav button.active {
 <script>
 /* ================= STATE ================= */
 const state = {
-  ee: 0,
-  eps: 0,
-  fi: 0,
-  layer: 0,
-  stage: 0,
-  multiplier: 1,
-  ownedUpgrades: {},
-  calcInput: ""
+  ee: 0, eps: 0, fi: 0, layer:0, stage:0, multiplier:1,
+  ownedUpgrades:{}, calcInput:"", showPrefix:true
 };
 
-/* ================= DATA ================= */
+/* ================= LAYERS ================= */
 const layers = [
-  { name: "Pré-Existência", base: 0.1 },
-  { name: "Sub-Quântico", base: 1 },
-  { name: "Partículas", base: 5 },
-  { name: "Átomos", base: 20 },
-  { name: "Vida", base: 100 },
-  { name: "Planetas", base: 500 },
-  { name: "Estrelas", base: 2000 },
-  { name: "Galáxias", base: 10000 },
-  { name: "Universos", base: 50000 },
-  { name: "Multiversos", base: 250000 }
+  {name:"Pré-Existência", base:0.1},
+  {name:"Sub-Quântico", base:1},
+  {name:"Partículas", base:5},
+  {name:"Átomos", base:20},
+  {name:"Vida", base:100},
+  {name:"Planetas", base:500},
+  {name:"Estrelas", base:2000},
+  {name:"Galáxias", base:10000},
+  {name:"Universos", base:50000},
+  {name:"Multiversos", base:250000}
 ];
 
+/* ================= UPGRADES ================= */
 const upgrades = {
-  0: [{ id:"puro", name:"Potencial Puro", cost:10, mult:2 }],
-  1: [{ id:"colapso", name:"Colapso Quântico", cost:100, mult:3 }],
-  2: [{ id:"simetria", name:"Simetria", cost:500, mult:5 }]
+  0:[{id:"puro",name:"Potencial Puro",cost:10,mult:2}],
+  1:[{id:"colapso",name:"Colapso Quântico",cost:100,mult:3}],
+  2:[{id:"simetria",name:"Simetria",cost:500,mult:5}]
 };
 
-/* ================= UI ================= */
+/* ================= TABS ================= */
 document.querySelectorAll("nav button").forEach(b=>{
-  b.onclick = ()=>switchTab(b.dataset.tab, b);
+  b.onclick=()=>switchTab(b.dataset.tab,b);
 });
-
-function switchTab(tab, btn){
+function switchTab(tab,btn){
   document.querySelectorAll(".panel").forEach(p=>p.classList.remove("active"));
   document.querySelectorAll("nav button").forEach(b=>b.classList.remove("active"));
   document.getElementById(tab).classList.add("active");
   btn.classList.add("active");
+  if(tab==="credits"){document.getElementById('visitCount').textContent=localStorage.getItem('visits')||0;}
+}
 
-  // Atualiza visitas quando abre créditos
-  if(tab === 'credits'){
-    document.getElementById('visitCount').textContent = localStorage.getItem('visits') || 0;
+/* ================= VISITAS ================= */
+let visits = localStorage.getItem('visits')||0;
+visits = parseInt(visits)+1;
+localStorage.setItem('visits',visits);
+
+/* ================= PREFIX ================= */
+function formatNumber(n){
+  if(!state.showPrefix) return n.toFixed(1);
+  const prefixes=[
+    [1e30,"No"],[1e27,"Oc"],[1e24,"Sp"],[1e21,"Sx"],
+    [1e18,"Qi"],[1e15,"Qa"],[1e12,"T"],[1e9,"B"],
+    [1e6,"M"],[1e3,"K"]
+  ];
+  for(const [v,p] of prefixes){
+    if(n>=v) return (n/v).toFixed(2)+p;
   }
+  return n.toFixed(1);
 }
-
-/* ================= CONTADOR DE VISITAS ================= */
-let visits = localStorage.getItem('visits');
-if(!visits){
-  visits = 1;
-} else {
-  visits = parseInt(visits) + 1;
-}
-localStorage.setItem('visits', visits);
 
 /* ================= GAME LOGIC ================= */
-document.getElementById("clickBtn").onclick = ()=>{
-  state.ee += 1 * state.multiplier;
-};
-
-document.getElementById("stageBtn").onclick = ()=>{
-  const cost = layers[state.layer].base * Math.pow(1.6, state.stage);
-  if(state.ee >= cost){
-    state.ee -= cost;
+document.getElementById("clickBtn").onclick=()=>{state.ee+=1*state.multiplier;};
+document.getElementById("stageBtn").onclick=()=>{
+  const cost = layers[state.layer].base*Math.pow(1.6,state.stage);
+  if(state.ee>=cost){
+    state.ee-=cost;
     state.stage++;
-    state.eps += layers[state.layer].base * state.multiplier;
-    if(state.stage >= 10 && state.layer < layers.length-1){
-      state.stage = 0;
+    state.eps+=layers[state.layer].base*state.multiplier;
+    if(state.stage>=10 && state.layer<layers.length-1){
+      state.stage=0;
       state.layer++;
       loadUpgrades();
     }
   }
 };
-
-document.getElementById("prestigeBtn").onclick = ()=>{
-  if(state.layer >= 5){
-    state.fi += Math.floor(Math.log10(state.ee+1));
-    Object.assign(state,{
-      ee:0,eps:0,layer:0,stage:0,
-      multiplier:1+state.fi*0.5,
-      ownedUpgrades:{}
-    });
+document.getElementById("prestigeBtn").onclick=()=>{
+  if(state.layer>=5){
+    state.fi+=Math.floor(Math.log10(state.ee+1));
+    Object.assign(state,{ee:0,eps:0,layer:0,stage:0,multiplier:1+state.fi*0.5,ownedUpgrades:{}});
     loadUpgrades();
   }
 };
@@ -267,61 +307,58 @@ document.getElementById("prestigeBtn").onclick = ()=>{
 /* ================= UPGRADES ================= */
 function loadUpgrades(){
   const list = document.getElementById("upgradeList");
-  list.innerHTML = "";
+  list.innerHTML="";
   (upgrades[state.layer]||[]).forEach(u=>{
-    const btn = document.createElement("button");
-    btn.className="btn";
-    btn.textContent=`${u.name} (${u.cost} EE)`;
-    btn.disabled = state.ownedUpgrades[u.id];
-    btn.onclick=()=>{
-      if(state.ee>=u.cost){
-        state.ee-=u.cost;
-        state.multiplier*=u.mult;
-        state.ownedUpgrades[u.id]=true;
-        btn.disabled=true;
-      }
+    const node=document.createElement("div");
+    node.className="upgrade-node";
+    node.textContent=`${u.name}\n(${formatNumber(u.cost)} EE)`;
+    node.onclick=()=>{
+      if(state.ee>=u.cost){state.ee-=u.cost;state.multiplier*=u.mult;state.ownedUpgrades[u.id]=true;loadUpgrades();}
     };
-    list.appendChild(btn);
+    if(state.ownedUpgrades[u.id]) node.style.opacity=0.5;
+    list.appendChild(node);
   });
 }
+loadUpgrades();
 
 /* ================= CALCULATOR ================= */
-const keys = ["7","8","9","+","4","5","6","-","1","2","3","*","0",".","=","C"];
-const calcKeys = document.getElementById("calcKeys");
-
+const keys=["7","8","9","+","4","5","6","-","1","2","3","*","0",".","=","C"];
+const calcKeys=document.getElementById("calcKeys");
 keys.forEach(k=>{
   const b=document.createElement("button");
   b.textContent=k;
   b.onclick=()=>calcPress(k);
   calcKeys.appendChild(b);
 });
-
 function calcPress(k){
   if(k==="C") state.calcInput="";
   else if(k==="="){
     try{
       const res=eval(state.calcInput);
       state.calcInput=res.toString();
-      state.multiplier*=1.1; // bônus real
+      state.multiplier*=1.1;
       document.getElementById("calcResult").textContent="Boost +10%!";
     }catch{}
   }else state.calcInput+=k;
   document.getElementById("calcDisplay").value=state.calcInput;
 }
 
+/* ================= PREFIX BUTTON ================= */
+document.getElementById("prefixBtn").onclick=()=>{
+  state.showPrefix=!state.showPrefix;
+};
+
 /* ================= LOOP ================= */
 setInterval(()=>{
   state.ee+=state.eps/10;
-  document.getElementById("ee").textContent=state.ee.toFixed(1);
-  document.getElementById("eps").textContent=state.eps.toFixed(1);
-  document.getElementById("fi").textContent=state.fi;
+  document.getElementById("ee").textContent=formatNumber(state.ee);
+  document.getElementById("eps").textContent=formatNumber(state.eps);
+  document.getElementById("fi").textContent=formatNumber(state.fi);
   document.getElementById("layerName").textContent=layers[state.layer].name;
   document.getElementById("stage").textContent=state.stage;
   document.getElementById("stageBar").style.width=(state.stage*10)+"%";
 },100);
 
-loadUpgrades();
 </script>
-
 </body>
 </html>
