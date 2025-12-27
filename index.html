@@ -3,75 +3,109 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Existence Idle</title>
+<title>Existence Idle ∞</title>
 
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#6c63ff">
+<meta name="theme-color" content="#5f5cff">
 
 <style>
+/* ================= RESET ================= */
+* { box-sizing: border-box; margin:0; padding:0; }
+
 /* ================= BASE ================= */
 body {
-  margin: 0;
   font-family: system-ui, Arial;
-  background: radial-gradient(circle at top, #1a1a3a, #070711);
+  background: radial-gradient(circle at top, #1b1b3a, #05050f);
   color: #eaeaff;
 }
+
+/* ================= HEADER ================= */
 header {
   text-align: center;
-  padding: 15px;
-  background: linear-gradient(90deg, #6c63ff, #4b44ff);
+  padding: 16px;
+  background: linear-gradient(90deg, #5f5cff, #7f7cff);
+  box-shadow: 0 0 20px #5f5cff66;
 }
-h1 { margin: 0; }
 
-/* ================= TABS ================= */
+/* ================= NAV ================= */
 nav {
   display: flex;
-  background: #0e0e22;
+  background: #0b0b22;
 }
 nav button {
   flex: 1;
-  padding: 12px;
+  padding: 14px;
+  background: none;
   border: none;
-  background: transparent;
-  color: #aaa;
+  color: #888;
   cursor: pointer;
+  transition: .2s;
 }
 nav button.active {
-  color: white;
-  border-bottom: 3px solid #6c63ff;
+  color: #fff;
+  border-bottom: 3px solid #5f5cff;
 }
 
 /* ================= PANELS ================= */
 .panel {
   display: none;
-  padding: 15px;
-  animation: fadeIn .3s ease;
+  padding: 16px;
+  animation: fade .25s ease;
 }
 .panel.active { display: block; }
 
 .card {
-  background: #111133;
-  padding: 10px;
-  border-radius: 10px;
-  margin-bottom: 10px;
+  background: #0f0f2a;
+  border-radius: 14px;
+  padding: 14px;
+  margin-bottom: 12px;
+  box-shadow: 0 0 12px #000;
 }
 
-button.action {
+/* ================= BUTTONS ================= */
+.btn {
   width: 100%;
-  padding: 10px;
-  background: #6c63ff;
+  padding: 12px;
+  border-radius: 10px;
   border: none;
-  border-radius: 8px;
+  background: linear-gradient(90deg, #5f5cff, #7f7cff);
   color: white;
   cursor: pointer;
+  margin-top: 6px;
 }
-button.action:disabled {
-  background: #333;
+.btn:disabled {
+  opacity: .4;
+  cursor: default;
 }
 
-/* ================= ANIMAÇÕES ================= */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(5px); }
+/* ================= PROGRESS ================= */
+.progress {
+  height: 10px;
+  background: #222;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-top: 6px;
+}
+.progress div {
+  height: 100%;
+  background: linear-gradient(90deg, #5f5cff, #7f7cff);
+}
+
+/* ================= CALCULATOR ================= */
+.calc {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  margin-top: 6px;
+}
+.calc button {
+  padding: 14px;
+  font-size: 16px;
+}
+
+/* ================= ANIM ================= */
+@keyframes fade {
+  from { opacity: 0; transform: translateY(4px); }
   to { opacity: 1; transform: translateY(0); }
 }
 </style>
@@ -80,29 +114,31 @@ button.action:disabled {
 <body>
 
 <header>
-  <h1>Existence Idle</h1>
-  <small>Do Nada ao ∞</small>
+  <h1>Existence Idle ∞</h1>
+  <small>Da partícula ao impossível</small>
 </header>
 
 <nav>
-  <button class="active" onclick="showTab('game')">Camadas</button>
-  <button onclick="showTab('upgrades')">Upgrades</button>
-  <button onclick="showTab('prestige')">Prestígio</button>
-  <button onclick="showTab('stats')">Stats</button>
+  <button class="active" data-tab="game">Camadas</button>
+  <button data-tab="upgrades">Upgrades</button>
+  <button data-tab="calculator">Calculadora</button>
+  <button data-tab="prestige">Prestígio</button>
+  <button data-tab="credits">Créditos</button>
 </nav>
 
-<!-- ================= CAMADAS ================= -->
+<!-- ================= GAME ================= -->
 <div id="game" class="panel active">
   <div class="card">
     <p>Essência Existencial: <b id="ee">0</b></p>
-    <p>EE / s: <b id="eps">0</b></p>
-    <button class="action" onclick="clickExist()">Gerar Existência</button>
+    <p>EE/s: <b id="eps">0</b></p>
+    <button class="btn" id="clickBtn">Gerar Existência</button>
   </div>
 
   <div class="card">
     <h3 id="layerName"></h3>
-    <p id="stageInfo"></p>
-    <button class="action" onclick="buyStage()">Comprar Estágio</button>
+    <p>Estágio <span id="stage"></span>/10</p>
+    <div class="progress"><div id="stageBar"></div></div>
+    <button class="btn" id="stageBtn">Comprar Estágio</button>
   </div>
 </div>
 
@@ -111,25 +147,48 @@ button.action:disabled {
   <div id="upgradeList"></div>
 </div>
 
-<!-- ================= PRESTÍGIO ================= -->
-<div id="prestige" class="panel">
+<!-- ================= CALCULATOR ================= -->
+<div id="calculator" class="panel">
   <div class="card">
-    <p>Fragmentos do Infinito: <b id="fi">0</b></p>
-    <button class="action" onclick="prestige()">Reset Absoluto</button>
+    <input id="calcDisplay" disabled style="width:100%;padding:10px;font-size:18px">
+    <div class="calc" id="calcKeys"></div>
+    <p id="calcResult"></p>
   </div>
 </div>
 
-<!-- ================= STATS ================= -->
-<div id="stats" class="panel">
+<!-- ================= PRESTIGE ================= -->
+<div id="prestige" class="panel">
   <div class="card">
-    <p>Camada Atual: <span id="statLayer"></span></p>
-    <p>Total de resets: <span id="statResets"></span></p>
+    <p>Fragmentos do Infinito: <b id="fi">0</b></p>
+    <button class="btn" id="prestigeBtn">Reset Absoluto</button>
+  </div>
+</div>
+
+<!-- ================= CRÉDITOS ================= -->
+<div id="credits" class="panel">
+  <div class="card" style="text-align:center;">
+    <p>Por Planeto</p>
+    <p>Foi feito uso do ChatGPT para fazer este jogo</p>
+    <p>Quantidade de Visitas no jogo: <b id="visitCount">0</b></p>
+    <p>Obrigado por jogar!</p>
   </div>
 </div>
 
 <script>
-/* ================= DADOS ================= */
-const LAYERS = [
+/* ================= STATE ================= */
+const state = {
+  ee: 0,
+  eps: 0,
+  fi: 0,
+  layer: 0,
+  stage: 0,
+  multiplier: 1,
+  ownedUpgrades: {},
+  calcInput: ""
+};
+
+/* ================= DATA ================= */
+const layers = [
   { name: "Pré-Existência", base: 0.1 },
   { name: "Sub-Quântico", base: 1 },
   { name: "Partículas", base: 5 },
@@ -142,103 +201,124 @@ const LAYERS = [
   { name: "Multiversos", base: 250000 }
 ];
 
-/* ================= ESTADO ================= */
-const game = {
-  ee: 0,
-  eps: 0,
-  fi: 0,
-  layer: 0,
-  stage: 0,
-  resets: 0,
-  multiplier: 1
+const upgrades = {
+  0: [{ id:"puro", name:"Potencial Puro", cost:10, mult:2 }],
+  1: [{ id:"colapso", name:"Colapso Quântico", cost:100, mult:3 }],
+  2: [{ id:"simetria", name:"Simetria", cost:500, mult:5 }]
 };
 
-/* ================= UPGRADES POR CAMADA ================= */
-const UPGRADES = {
-  0: [
-    { name: "Potencial Puro", cost: 10, effect: () => game.multiplier *= 2 }
-  ],
-  1: [
-    { name: "Colapso Quântico", cost: 100, effect: () => game.multiplier *= 3 }
-  ],
-  2: [
-    { name: "Simetria de Partículas", cost: 500, effect: () => game.multiplier *= 5 }
-  ],
-  3: [
-    { name: "Ligação Molecular", cost: 2000, effect: () => game.multiplier *= 8 }
-  ]
-};
+/* ================= UI ================= */
+document.querySelectorAll("nav button").forEach(b=>{
+  b.onclick = ()=>switchTab(b.dataset.tab, b);
+});
 
-/* ================= FUNÇÕES ================= */
-function clickExist() {
-  game.ee += 1 * game.multiplier;
+function switchTab(tab, btn){
+  document.querySelectorAll(".panel").forEach(p=>p.classList.remove("active"));
+  document.querySelectorAll("nav button").forEach(b=>b.classList.remove("active"));
+  document.getElementById(tab).classList.add("active");
+  btn.classList.add("active");
+
+  // Atualiza visitas quando abre créditos
+  if(tab === 'credits'){
+    document.getElementById('visitCount').textContent = localStorage.getItem('visits') || 0;
+  }
 }
 
-function buyStage() {
-  const cost = LAYERS[game.layer].base * Math.pow(1.6, game.stage);
-  if (game.ee >= cost) {
-    game.ee -= cost;
-    game.stage++;
-    game.eps += LAYERS[game.layer].base * game.multiplier;
-    if (game.stage >= 10 && game.layer < LAYERS.length - 1) {
-      game.stage = 0;
-      game.layer++;
+/* ================= CONTADOR DE VISITAS ================= */
+let visits = localStorage.getItem('visits');
+if(!visits){
+  visits = 1;
+} else {
+  visits = parseInt(visits) + 1;
+}
+localStorage.setItem('visits', visits);
+
+/* ================= GAME LOGIC ================= */
+document.getElementById("clickBtn").onclick = ()=>{
+  state.ee += 1 * state.multiplier;
+};
+
+document.getElementById("stageBtn").onclick = ()=>{
+  const cost = layers[state.layer].base * Math.pow(1.6, state.stage);
+  if(state.ee >= cost){
+    state.ee -= cost;
+    state.stage++;
+    state.eps += layers[state.layer].base * state.multiplier;
+    if(state.stage >= 10 && state.layer < layers.length-1){
+      state.stage = 0;
+      state.layer++;
       loadUpgrades();
     }
   }
-}
+};
 
-function prestige() {
-  if (game.layer >= 5) {
-    game.fi += Math.floor(Math.log10(game.ee + 1));
-    game.ee = 0;
-    game.eps = 0;
-    game.layer = 0;
-    game.stage = 0;
-    game.multiplier = 1 + game.fi * 0.5;
-    game.resets++;
+document.getElementById("prestigeBtn").onclick = ()=>{
+  if(state.layer >= 5){
+    state.fi += Math.floor(Math.log10(state.ee+1));
+    Object.assign(state,{
+      ee:0,eps:0,layer:0,stage:0,
+      multiplier:1+state.fi*0.5,
+      ownedUpgrades:{}
+    });
     loadUpgrades();
   }
-}
+};
 
-/* ================= UI ================= */
-function showTab(id) {
-  document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
-  document.querySelectorAll("nav button").forEach(b => b.classList.remove("active"));
-  document.getElementById(id).classList.add("active");
-  event.target.classList.add("active");
-}
-
-function loadUpgrades() {
+/* ================= UPGRADES ================= */
+function loadUpgrades(){
   const list = document.getElementById("upgradeList");
   list.innerHTML = "";
-  (UPGRADES[game.layer] || []).forEach(u => {
+  (upgrades[state.layer]||[]).forEach(u=>{
     const btn = document.createElement("button");
-    btn.className = "action";
-    btn.textContent = `${u.name} (${u.cost} EE)`;
-    btn.onclick = () => {
-      if (game.ee >= u.cost) {
-        game.ee -= u.cost;
-        u.effect();
-        btn.disabled = true;
+    btn.className="btn";
+    btn.textContent=`${u.name} (${u.cost} EE)`;
+    btn.disabled = state.ownedUpgrades[u.id];
+    btn.onclick=()=>{
+      if(state.ee>=u.cost){
+        state.ee-=u.cost;
+        state.multiplier*=u.mult;
+        state.ownedUpgrades[u.id]=true;
+        btn.disabled=true;
       }
     };
     list.appendChild(btn);
   });
 }
 
+/* ================= CALCULATOR ================= */
+const keys = ["7","8","9","+","4","5","6","-","1","2","3","*","0",".","=","C"];
+const calcKeys = document.getElementById("calcKeys");
+
+keys.forEach(k=>{
+  const b=document.createElement("button");
+  b.textContent=k;
+  b.onclick=()=>calcPress(k);
+  calcKeys.appendChild(b);
+});
+
+function calcPress(k){
+  if(k==="C") state.calcInput="";
+  else if(k==="="){
+    try{
+      const res=eval(state.calcInput);
+      state.calcInput=res.toString();
+      state.multiplier*=1.1; // bônus real
+      document.getElementById("calcResult").textContent="Boost +10%!";
+    }catch{}
+  }else state.calcInput+=k;
+  document.getElementById("calcDisplay").value=state.calcInput;
+}
+
 /* ================= LOOP ================= */
-setInterval(() => {
-  game.ee += game.eps / 10;
-  document.getElementById("ee").textContent = game.ee.toFixed(1);
-  document.getElementById("eps").textContent = game.eps.toFixed(1);
-  document.getElementById("fi").textContent = game.fi;
-  document.getElementById("layerName").textContent = LAYERS[game.layer].name;
-  document.getElementById("stageInfo").textContent =
-    `Estágio ${game.stage + 1} | Custo: ${(LAYERS[game.layer].base * Math.pow(1.6, game.stage)).toFixed(1)}`;
-  document.getElementById("statLayer").textContent = LAYERS[game.layer].name;
-  document.getElementById("statResets").textContent = game.resets;
-}, 100);
+setInterval(()=>{
+  state.ee+=state.eps/10;
+  document.getElementById("ee").textContent=state.ee.toFixed(1);
+  document.getElementById("eps").textContent=state.eps.toFixed(1);
+  document.getElementById("fi").textContent=state.fi;
+  document.getElementById("layerName").textContent=layers[state.layer].name;
+  document.getElementById("stage").textContent=state.stage;
+  document.getElementById("stageBar").style.width=(state.stage*10)+"%";
+},100);
 
 loadUpgrades();
 </script>
